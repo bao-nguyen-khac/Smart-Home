@@ -1,1 +1,1 @@
-# Smart-House
+# Đồ án đa ngành 212 ĐHBK
