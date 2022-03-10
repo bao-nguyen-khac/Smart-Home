@@ -1,1 +1,59 @@
-<h1>Dashboard</h1>
+<div class="card w-25 mt-4 ml-4">
+    <div class="card-body">
+        <h5 class="card-title">BLOCK_LED</h5>
+        <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+        <form class="btn-group btn-group-toggle" data-toggle="buttons" id="formLED">
+            <label class="btn btn-secondary" id="opt1">
+                <input type="radio" name="options" id="option1" autocomplete="off" value="1" checked> BẬT
+            </label>
+            <label class="btn btn-secondary" id="opt2">
+                <input type="radio" name="options" id="option2" autocomplete="off" value="0"> TẮT
+            </label>
+        </form>
+    </div>
+</div>
+<script>
+    var funcLED = (e) => {
+        dataLED = document.querySelector('input[name=\'options\']:checked').value
+        axios({
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-AIO-Key': 'aio_MEOE63s87DeuU8ApesuZcK0svTka'
+            },
+            url: 'https://io.adafruit.com/api/v2/minhbao20052001/feeds/smart-led/data',
+            data: JSON.stringify({ "value": Number(dataLED) })
+        }).then(() => {
+            setInterval(() => {
+                axios({
+                    method: 'GET',
+                    url: 'https://io.adafruit.com/api/v2/minhbao20052001/feeds/smart-led'
+                }).then(data => {
+                    if (data.data.last_value == 0) {
+                        document.getElementById('option2').parentNode.classList.add("active")
+                        document.getElementById('option1').parentNode.classList.remove("active")
+                        document.getElementById('option2').checked = true
+                        document.getElementById('option1').checked = false
+                    } else {
+                        document.getElementById('option1').parentNode.classList.add("active")
+                        document.getElementById('option2').parentNode.classList.remove("active")
+                        document.getElementById('option1').checked = true
+                        document.getElementById('option2').checked = false
+                    }
+
+                })
+            }, 3000)
+        })
+    }
+    funcLED()
+    document.getElementById('opt1').addEventListener('click',(e)=>{
+        document.getElementById('option1').checked = true
+        document.getElementById('option2').checked = false
+        funcLED()
+    })
+    document.getElementById('opt2').addEventListener('click',(e)=>{
+        document.getElementById('option2').checked = true
+        document.getElementById('option1').checked = false
+        funcLED()
+    })
+</script>
