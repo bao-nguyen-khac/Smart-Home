@@ -1,59 +1,249 @@
-<div class="card w-25 mt-4 ml-4">
-    <div class="card-body">
-        <h5 class="card-title">BLOCK_LED</h5>
-        <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-        <form class="btn-group btn-group-toggle" data-toggle="buttons" id="formLED">
-            <label class="btn btn-secondary" id="opt1">
-                <input type="radio" name="options" id="option1" autocomplete="off" value="1" checked> BẬT
-            </label>
-            <label class="btn btn-secondary" id="opt2">
-                <input type="radio" name="options" id="option2" autocomplete="off" value="0"> TẮT
-            </label>
-        </form>
+<style>
+    .icon-light {
+        font-size: 60px;
+    }
+
+    .light-on {
+        color: #fffb07;
+    }
+
+    .light-off {
+        color: #212529;
+    }
+
+    .turn-on {
+        color: #0a58ca;
+    }
+
+    .toggle-switch {
+        font-size: 20px;
+    }
+
+    .switch {
+        position: relative;
+        display: inline-block;
+        width: 60px;
+        height: 34px;
+    }
+
+    .switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        -webkit-transition: .4s;
+        transition: .4s;
+    }
+
+    .slider:before {
+        position: absolute;
+        content: "";
+        height: 26px;
+        width: 26px;
+        left: 4px;
+        bottom: 4px;
+        background-color: white;
+        -webkit-transition: .4s;
+        transition: .4s;
+    }
+
+    input:checked+.slider {
+        background-color: #2196F3;
+    }
+
+    input:focus+.slider {
+        box-shadow: 0 0 1px #2196F3;
+    }
+
+    input:checked+.slider:before {
+        -webkit-transform: translateX(26px);
+        -ms-transform: translateX(26px);
+        transform: translateX(26px);
+    }
+
+    /* Rounded sliders */
+    .slider.round {
+        border-radius: 34px;
+    }
+
+    .slider.round:before {
+        border-radius: 50%;
+    }
+    
+    .icon-reload-api {
+        font-size: 30px;
+    }
+
+    .box-icon-reload {
+        margin-top: 20px;
+        width: 30px;
+        height: 30px;
+        cursor: pointer;
+    }
+
+    .box-icon-reload.active {
+        -webkit-animation-name: cycle;
+        -webkit-animation-duration: 2s;
+        -webkit-animation-iteration-count: 1;
+        -webkit-animation-fill-mode: forwards;
+        animation-name: cycle;
+        animation-duration: 2s;
+        animation-iteration-count: 1;
+        animation-fill-mode: forwards;
+        -moz-animation-name: cycle;
+        -moz-animation-duration: 2s;
+        -moz-animation-iteration-count: 1;
+        -moz-animation-fill-mode: forwards;
+    }
+
+    @-webkit-keyframes cycle {
+        from {
+            -webkit-transform: rotate(0deg);
+        }
+
+        to {
+            -webkit-transform: rotate(360deg);
+        }
+    }
+
+    @keyframes cycle {
+        from {
+            transform: rotate(0deg);
+        }
+
+        to {
+            transform: rotate(360deg);
+        }
+    }
+
+    @-moz-keyframes cycle {
+        from {
+            -moz-transform: rotate(0deg);
+        }
+
+        to {
+            -moz-transform: rotate(360deg);
+        }
+    }
+
+    .activate {
+        margin-top: 5px;
+        padding: 3px 5px;
+        background-color: #333;
+        color: #eee;
+        cursor: pointer;
+    }
+</style>
+<div class="container">
+    <div class="row">
+        <div class="col-11">
+        </div>
+        <div class="col-1">
+            <div class="box-icon-reload">
+                <i class="fas fa-redo icon-reload-api"></i>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <h3>Living room</h3>
+        <div class="col-6">
+            <div>
+                <i class="fas fa-lightbulb icon-light light-off"></i>
+                <label class="switch">
+                    <input type="checkbox" id="smart-led-1">
+                    <span class="slider round"></span>
+                </label>
+            </div>
+            LED 1
+        </div>
+        <div class="col-6">
+            <div>
+                <i class="fas fa-lightbulb icon-light light-off"></i>
+                <label class="switch">
+                    <input type="checkbox" id="smart-led-2">
+                    <span class="slider round"></span>
+                </label>
+            </div>
+            LED 2
+        </div>
     </div>
 </div>
+
 <script>
-    var funcLED = (e) => {
-        dataLED = document.querySelector('input[name=\'options\']:checked').value
+    $(".box-icon-reload").click(function () {
+        $('.box-icon-reload').addClass('active');
+        $('.box-icon-reload').one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function () {
+            $(this).removeClass('active');
+        });
+    });
+
+    const ledArr = ['smart-led-1', 'smart-led-2']
+    const getAPISmartLed = (e) => {
         axios({
-            method: 'POST',
+            method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
-                'X-AIO-Key': 'aio_MEOE63s87DeuU8ApesuZcK0svTka'
+                'X-AIO-Key': 'aio_OFXY32LdNJqtiZb5KQgxguUq6GHG'
             },
-            url: 'https://io.adafruit.com/api/v2/minhbao20052001/feeds/smart-led/data',
-            data: JSON.stringify({ "value": Number(dataLED) })
-        }).then(() => {
-            setInterval(() => {
-                axios({
-                    method: 'GET',
-                    url: 'https://io.adafruit.com/api/v2/minhbao20052001/feeds/smart-led'
-                }).then(data => {
-                    if (data.data.last_value == 0) {
-                        document.getElementById('option2').parentNode.classList.add("active")
-                        document.getElementById('option1').parentNode.classList.remove("active")
-                        document.getElementById('option2').checked = true
-                        document.getElementById('option1').checked = false
-                    } else {
-                        document.getElementById('option1').parentNode.classList.add("active")
-                        document.getElementById('option2').parentNode.classList.remove("active")
-                        document.getElementById('option1').checked = true
-                        document.getElementById('option2').checked = false
-                    }
-
-                })
-            }, 3000)
+            url: `https://io.adafruit.com/api/v2/baonguyenkhac/feeds/${e}`
+        }).then(data => {
+            const checkInputJQ = $(`#${e}`)
+            const iconLight = document.getElementById(`${e}`).parentNode.parentNode.querySelector('.icon-light')
+            if (data.data.last_value == 1) {
+                checkInputJQ.attr('checked', true)
+                iconLight.classList.remove("light-off")
+                iconLight.classList.add("light-on")
+            } else {
+                checkInputJQ.attr('checked', false)
+                iconLight.classList.remove("light-on")
+                iconLight.classList.add("light-off")
+            }
         })
     }
-    funcLED()
-    document.getElementById('opt1').addEventListener('click',(e)=>{
-        document.getElementById('option1').checked = true
-        document.getElementById('option2').checked = false
-        funcLED()
+
+    ledArr.forEach(element => {
+        getAPISmartLed(element)
+        document.querySelector(`#${element}`).addEventListener('change', (e) => {
+            const value = e.target.checked ? 1 : 0;
+            axios({
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-AIO-Key': 'aio_OFXY32LdNJqtiZb5KQgxguUq6GHG'
+                },
+                url: `https://io.adafruit.com/api/v2/baonguyenkhac/feeds/${element}/data`,
+                data: JSON.stringify({ 'value': value })
+            }).then(() => {
+                const iconLight = document.getElementById(`${element}`).parentNode.parentNode.querySelector('.icon-light')
+                if (value) {
+                    iconLight.classList.remove("light-off")
+                    iconLight.classList.add("light-on")
+                } else {
+                    iconLight.classList.remove("light-on")
+                    iconLight.classList.add("light-off")
+                }
+            })
+        })
     })
-    document.getElementById('opt2').addEventListener('click',(e)=>{
-        document.getElementById('option2').checked = true
-        document.getElementById('option1').checked = false
-        funcLED()
+
+    document.querySelector('.box-icon-reload').addEventListener('click', () => {
+        for(var element of ledArr) {
+            getAPISmartLed(element)
+        }
     })
+
+    setInterval(() => {
+        for(var element of ledArr) {
+            getAPISmartLed(element)
+        }
+    }, 30000)
 </script>
