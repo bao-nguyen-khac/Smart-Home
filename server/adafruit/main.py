@@ -1,7 +1,9 @@
+import datetime
 import random
 import sys
 import time
 
+import pymongo
 import serial.tools.list_ports
 from Adafruit_IO import MQTTClient
 from sympy import true
@@ -24,6 +26,12 @@ def disconnected ( client ) :
     sys.exit(1)
 
 def message ( client , feed_id , payload ):
+    feed = feed_id.split('-')
+    if feed[1] == 'led':
+        name = 'LED'
+        key = feed[2]
+    data = [key, name, payload]
+    sendDataToDB(data)
     print(" Nhan du lieu : " + payload )
 
 client = MQTTClient ( AIO_USERNAME , AIO_KEY )
@@ -75,6 +83,22 @@ def readSerial():
             else:
                 mess = mess[end+1:]
 
+# Connect Mongodb
+myclient = pymongo.MongoClient("mongodb://localhost:27017/")
+mydb = myclient["smart-home"]
+def sendDataToDB(data):
+    if data[1] == "LED":
+        mycol = mydb["smart-led"]
+        key = 'smart-led-' + data[0]
+    now = datetime.datetime.now()
+    output = {
+        "name": data[1],
+        "key": key,
+        "data": data[2],
+        "createAt": now
+    }
+    mycol.insert_one(output)
+
 while True:
     readSerial()
-    time.sleep(1)
+    time.sleep(5)

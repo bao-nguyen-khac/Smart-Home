@@ -1,7 +1,7 @@
-const https = require('https');
+
 class HomeController {
     async index(req, res, next) {
-        res.render('dashboard', {
+        res.render('light-manager', {
             layout: 'home'
         })
     }
