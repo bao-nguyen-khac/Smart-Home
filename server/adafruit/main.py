@@ -30,17 +30,13 @@ def message ( client , feed_id , payload ):
     if feed[1] == 'led':
         name = 'LED'
         key = feed[2]
+    if feed[1] == 'temp':
+        name = 'TEMP'
+        key = feed[2]
     data = [key, name, payload]
     sendDataToDB(data)
     print(" Nhan du lieu : " + payload )
-
-client = MQTTClient ( AIO_USERNAME , AIO_KEY )
-client.on_connect = connected
-client.on_disconnect = disconnected
-client.on_message = message
-client.on_subscribe = subscribe
-client.connect ()
-client.loop_background ()
+    ser.write((str(payload) + "#").encode())
 
 def getPort():
     ports = serial.tools.list_ports.comports()
@@ -64,9 +60,15 @@ def processData(data):
     data = data.replace("#", "")
     splitData = data.split(":")
     print(splitData)
-    if splitData[1] == "LED":
-        name = "smart-led-" + splitData[0]
-        client.publish(name, splitData[2])
+    try:
+        if splitData[1] == "LED":
+            name = "smart-led-" + splitData[0]
+            client.publish(name, splitData[2])
+        if splitData[1] == "TEMP":
+            name = "smart-temp-" + splitData[0]
+            client.publish(name, splitData[2])
+    except:
+        pass
 
 mess = ""
 def readSerial():
@@ -90,6 +92,9 @@ def sendDataToDB(data):
     if data[1] == "LED":
         mycol = mydb["smart-led"]
         key = 'smart-led-' + data[0]
+    if data[1] == "TEMP":
+        mycol = mydb["smart-temp"]
+        key = 'smart-temp-' + data[0]
     now = datetime.datetime.now()
     output = {
         "name": data[1],
@@ -98,6 +103,14 @@ def sendDataToDB(data):
         "createAt": now
     }
     mycol.insert_one(output)
+
+client = MQTTClient ( AIO_USERNAME , AIO_KEY )
+client.on_connect = connected
+client.on_disconnect = disconnected
+client.on_message = message
+client.on_subscribe = subscribe
+client.connect ()
+client.loop_background ()
 
 while True:
     readSerial()

@@ -9,13 +9,13 @@ const handlebars = require('express-handlebars');
 const http = require("http");
 const server = http.createServer(app);
 
-const db = require('./confic/db/index');
+var connectSingleton = require('./config/db/index');
 
 const hbs = handlebars.create({
     extname: '.hbs',
 });
 
-db.connect();
+var db = connectSingleton.getInstance().connect()
 
 // Middlleware built-in
 app.use(express.static(path.join(__dirname, 'public')));
