@@ -7,7 +7,7 @@
                 </div>
                 <div class="col-9">
                     <p>In door temperature</p>
-                    <p>+25 °C</p>
+                    <p class="temp-number"></p>
                 </div>
             </div>
             <div class="row">
@@ -16,7 +16,7 @@
                 </div>
                 <div class="col-9">
                     <p>Humidity</p>
-                    <p>30%</p>
+                    <p class="humi-number"></p>
                 </div>
             </div>
         </div>
@@ -32,3 +32,47 @@
         </div>
     </div>
 </div>
+{{!--
+<script src="/js/dashboard.js"></script> --}}
+<script>
+    const tempArr = ['smart-temp-1']
+    const humiArr = ['smart-humi-1']
+    const getAPITemp = (e) => {
+        axios({
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-AIO-Key': 'aio_PUsz82FC9Dqmk0zhO2OHAn1InlV9'
+            },
+            url: `https://io.adafruit.com/api/v2/baonguyenkhac/feeds/${e}`
+        }).then(data => {
+            document.querySelector('.temp-number').innerHTML = `+${data.data.last_value} °C`;
+        })
+    }
+    const getAPIHumi = (e) => {
+        axios({
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-AIO-Key': 'aio_PUsz82FC9Dqmk0zhO2OHAn1InlV9'
+            },
+            url: `https://io.adafruit.com/api/v2/baonguyenkhac/feeds/${e}`
+        }).then(data => {
+            document.querySelector('.humi-number').innerHTML = `${data.data.last_value} %`;
+        })
+    }
+    tempArr.forEach(t => {
+        getAPITemp(t)
+    })
+    humiArr.forEach(h => {
+        getAPIHumi(h)
+    })
+    setInterval(() => {
+        for (var element of tempArr) {
+            getAPITemp(element)
+        }
+        for (var element of humiArr) {
+            getAPIHumi(element)
+        }
+    }, 30000)
+</script>

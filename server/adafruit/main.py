@@ -8,16 +8,16 @@ import serial.tools.list_ports
 from Adafruit_IO import MQTTClient
 from sympy import true
 
-AIO_FEED_ID_1 = "smart-led-1"
-AIO_FEED_ID_2 = "smart-led-2"
+# AIO_FEED_ID = ['smart-led-1', 'smart-led-2', 'smart-temp-1', 'smart-humi-1']
+AIO_FEED_ID = ['smart-led-1', 'smart-led-2', 'smart-temp-1']
 AIO_USERNAME = "baonguyenkhac"
-AIO_KEY = "aio_OFXY32LdNJqtiZb5KQgxguUq6GHG"
+AIO_KEY = "aio_PUsz82FC9Dqmk0zhO2OHAn1InlV9"
 
 def connected ( client ) :
     print ("Ket noi thanh cong ...")
-    client.subscribe( AIO_FEED_ID_1 )
-    client.subscribe( AIO_FEED_ID_2 )
-
+    for each in AIO_FEED_ID:
+        client.subscribe( each )
+    
 def subscribe ( client , userdata , mid , granted_qos ) :
     print(" Subcribe thanh cong ...")
 
@@ -27,16 +27,16 @@ def disconnected ( client ) :
 
 def message ( client , feed_id , payload ):
     feed = feed_id.split('-')
-    if feed[1] == 'led':
-        name = 'LED'
-        key = feed[2]
-    if feed[1] == 'temp':
-        name = 'TEMP'
-        key = feed[2]
-    data = [key, name, payload]
-    sendDataToDB(data)
+    # if feed[1] == 'led':
+    #     name = 'LED'
+    #     key = feed[2]
+    # if feed[1] == 'temp':
+    #     name = 'TEMP'
+    #     key = feed[2]
+    # data = [key, name, payload]
+    # sendDataToDB(data)
     print(" Nhan du lieu : " + payload )
-    ser.write((str(payload) + "#").encode())
+    ser.write((feed[2] + str(payload) + "#").encode())
 
 def getPort():
     ports = serial.tools.list_ports.comports()
@@ -50,9 +50,9 @@ def getPort():
             commPort = (splitPort[0])
     return commPort
 
-# print(getPort())
-# ser = serial.Serial( port=getPort(), baudrate=115200)
-ser = serial.Serial( port="COM5", baudrate=115200)
+print(getPort())
+ser = serial.Serial( port=getPort(), baudrate=115200)
+# ser = serial.Serial( port="COM5", baudrate=115200)  
 
 mess = ""
 def processData(data):
@@ -66,6 +66,12 @@ def processData(data):
             client.publish(name, splitData[2])
         if splitData[1] == "TEMP":
             name = "smart-temp-" + splitData[0]
+            client.publish(name, splitData[2])
+        if splitData[1] == "HUMI":
+            name = "smart-humi-" + splitData[0]
+            client.publish(name, splitData[2])
+        if splitData[1] == "LIGHT":
+            name = "smart-light-" + splitData[0]
             client.publish(name, splitData[2])
     except:
         pass
@@ -102,7 +108,7 @@ def sendDataToDB(data):
         "data": data[2],
         "createAt": now
     }
-    mycol.insert_one(output)
+    # mycol.insert_one(output)
 
 client = MQTTClient ( AIO_USERNAME , AIO_KEY )
 client.on_connect = connected
