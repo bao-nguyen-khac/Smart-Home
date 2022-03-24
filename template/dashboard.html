@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"
+        integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous" />
+    <title>Smart Home</title>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+    <style>
+        .icon-light {
+            font-size: 60px;
+        }
+
+        .light-on {
+            color: #fffb07;
+        }
+
+        .light-off {
+            color: #212529;
+        }
+
+        .turn-on {
+            color: #0a58ca;
+        }
+
+        .toggle-switch {
+            font-size: 20px;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            -webkit-transition: .4s;
+            transition: .4s;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            -webkit-transition: .4s;
+            transition: .4s;
+        }
+
+        input:checked+.slider {
+            background-color: #2196F3;
+        }
+
+        input:focus+.slider {
+            box-shadow: 0 0 1px #2196F3;
+        }
+
+        input:checked+.slider:before {
+            -webkit-transform: translateX(26px);
+            -ms-transform: translateX(26px);
+            transform: translateX(26px);
+        }
+
+        /* Rounded sliders */
+        .slider.round {
+            border-radius: 34px;
+        }
+
+        .slider.round:before {
+            border-radius: 50%;
+        }
+
+        .icon-reload-api {
+            font-size: 30px;
+        }
+
+        .box-icon-reload {
+            margin-top: 20px;
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+        }
+
+        .box-icon-reload.active {
+            -webkit-animation-name: cycle;
+            -webkit-animation-duration: 2s;
+            -webkit-animation-iteration-count: 1;
+            -webkit-animation-fill-mode: forwards;
+            animation-name: cycle;
+            animation-duration: 2s;
+            animation-iteration-count: 1;
+            animation-fill-mode: forwards;
+            -moz-animation-name: cycle;
+            -moz-animation-duration: 2s;
+            -moz-animation-iteration-count: 1;
+            -moz-animation-fill-mode: forwards;
+        }
+
+        @-webkit-keyframes cycle {
+            from {
+                -webkit-transform: rotate(0deg);
+            }
+
+            to {
+                -webkit-transform: rotate(360deg);
+            }
+        }
+
+        @keyframes cycle {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        @-moz-keyframes cycle {
+            from {
+                -moz-transform: rotate(0deg);
+            }
+
+            to {
+                -moz-transform: rotate(360deg);
+            }
+        }
+
+        .activate {
+            margin-top: 5px;
+            padding: 3px 5px;
+            background-color: #333;
+            color: #eee;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="nav-link" href="/">Dashboard</a>
+        <a class="nav-link" href="/light-manager">Light Manager</a>
+    </nav>
+
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-11">
+            </div>
+            <div class="col-1">
+                <div class="box-icon-reload">
+                    <i class="fas fa-redo icon-reload-api"></i>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-3 d-flex justify-content-center align-items-center">
+                        <i class="fas fa-temperature-low fs-1 shadow p-3 mb-5 bg-body rounded-pill p-3"></i>
+                    </div>
+                    <div class="col-9">
+                        <p>Temperature</p>
+                        <p class="temp-number">1</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-3 d-flex justify-content-center align-items-center">
+                        <i class="fas fa-humidity fs-1 shadow p-3 mb-5 bg-body rounded-pill p-3"></i>
+                    </div>
+                    <div class="col-9">
+                        <p>Humidity</p>
+                        <p class="humi-number">2</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-3 d-flex justify-content-center align-items-center">
+                        <i class="far fa-sun fs-1 shadow p-3 mb-5 bg-body rounded-pill p-3"></i>
+                    </div>
+                    <div class="col-9">
+                        <p>Light intensity</p>
+                        <p class="light-number">3</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-3 d-flex justify-content-center align-items-center">
+                        <i class="fas fa-burn fs-1 shadow p-3 mb-5 bg-body rounded-pill p-3"></i>
+                    </div>
+                    <div class="col-9">
+                        <p>Gas concentration</p>
+                        <p class="gas-number">4</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $(".box-icon-reload").click(function () {
+            $('.box-icon-reload').addClass('active');
+            $('.box-icon-reload').one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function () {
+                $(this).removeClass('active');
+            });
+        });
+    </script>
+</body>
+
+</html>

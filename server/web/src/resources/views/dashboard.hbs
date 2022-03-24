@@ -1,4 +1,14 @@
+<link rel="stylesheet" href="/css/dashboard.css">
 <div class="container mt-4">
+    <div class="row">
+        <div class="col-11">
+        </div>
+        <div class="col-1">
+            <div class="box-icon-reload">
+                <i class="fas fa-redo icon-reload-api"></i>
+            </div>
+        </div>
+    </div>
     <div class="row">
         <div class="col-6">
             <div class="row">
@@ -6,7 +16,7 @@
                     <i class="fas fa-temperature-low fs-1 shadow p-3 mb-5 bg-body rounded-pill p-3"></i>
                 </div>
                 <div class="col-9">
-                    <p>In door temperature</p>
+                    <p>Temperature</p>
                     <p class="temp-number"></p>
                 </div>
             </div>
@@ -22,11 +32,21 @@
         </div>
         <div class="col-6">
             <div class="row">
-                <p>Light intensity</p>
+                <div class="col-3 d-flex justify-content-center align-items-center">
+                    <i class="far fa-sun fs-1 shadow p-3 mb-5 bg-body rounded-pill p-3"></i>
+                </div>
+                <div class="col-9">
+                    <p>Light intensity</p>
+                    <p class="light-number"></p>
+                </div>
             </div>
-            <div class="row justify-content-center align-items-center mt-4">
-                <div class="shadow p-3 mb-5 bg-body rounded-pill w-25 d-flex justify-content-center align-items-center">
-                    <span class="">60%</span>
+            <div class="row">
+                <div class="col-3 d-flex justify-content-center align-items-center">
+                    <i class="fas fa-burn fs-1 shadow p-3 mb-5 bg-body rounded-pill p-3"></i>
+                </div>
+                <div class="col-9">
+                    <p>Gas concentration</p>
+                    <p class="gas-number"></p>
                 </div>
             </div>
         </div>
@@ -35,14 +55,21 @@
 {{!--
 <script src="/js/dashboard.js"></script> --}}
 <script>
+    $(".box-icon-reload").click(function () {
+        $('.box-icon-reload').addClass('active');
+        $('.box-icon-reload').one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function () {
+            $(this).removeClass('active');
+        });
+    });
     const tempArr = ['smart-temp-1']
     const humiArr = ['smart-humi-1']
+    const lightArr = ['smart-light-sensor-1']
     const getAPITemp = (e) => {
         axios({
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
-                'X-AIO-Key': 'aio_PUsz82FC9Dqmk0zhO2OHAn1InlV9'
+                'X-AIO-Key': `aio_XnKw72j0M8u6Ae5DDvC2RyQ4wStD`
             },
             url: `https://io.adafruit.com/api/v2/baonguyenkhac/feeds/${e}`
         }).then(data => {
@@ -54,11 +81,23 @@
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
-                'X-AIO-Key': 'aio_PUsz82FC9Dqmk0zhO2OHAn1InlV9'
+                'X-AIO-Key': 'aio_XnKw72j0M8u6Ae5DDvC2RyQ4wStD'
             },
             url: `https://io.adafruit.com/api/v2/baonguyenkhac/feeds/${e}`
         }).then(data => {
             document.querySelector('.humi-number').innerHTML = `${data.data.last_value} %`;
+        })
+    }
+    const getAPILight = (e) => {
+        axios({
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-AIO-Key': 'aio_XnKw72j0M8u6Ae5DDvC2RyQ4wStD'
+            },
+            url: `https://io.adafruit.com/api/v2/baonguyenkhac/feeds/${e}`
+        }).then(data => {
+            document.querySelector('.light-number').innerHTML = `${Math.floor(data.data.last_value / 10.24)} %`;
         })
     }
     tempArr.forEach(t => {
@@ -67,12 +106,18 @@
     humiArr.forEach(h => {
         getAPIHumi(h)
     })
+    lightArr.forEach(l => {
+        getAPILight(l);
+    })
     setInterval(() => {
         for (var element of tempArr) {
             getAPITemp(element)
         }
         for (var element of humiArr) {
             getAPIHumi(element)
+        }
+        for (var element of lightArr) {
+            getAPILight(element)
         }
     }, 30000)
 </script>

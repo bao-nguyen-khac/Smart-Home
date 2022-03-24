@@ -71,7 +71,7 @@ def processData(data):
             name = "smart-humi-" + splitData[0]
             client.publish(name, splitData[2])
         if splitData[1] == "LIGHT":
-            name = "smart-light-" + splitData[0]
+            name = "smart-light-sensor" + splitData[0]
             client.publish(name, splitData[2])
     except:
         pass
