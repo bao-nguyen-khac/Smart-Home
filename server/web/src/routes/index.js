@@ -2,6 +2,7 @@ const HomeController = require("../app/controllers/HomeController");
 
 function route(app) {
     app.get('/light-manager', HomeController.lightManager);
+    app.get('/door-manager', HomeController.doorManager);
     app.get('/', HomeController.index);
 }
 

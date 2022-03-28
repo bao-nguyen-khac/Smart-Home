@@ -11,7 +11,7 @@ const getAPISmartLed = (e) => {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
-            'X-AIO-Key': 'aio_XnKw72j0M8u6Ae5DDvC2RyQ4wStD'
+            'X-AIO-Key': 'aio_Hfnz79nRupK7iPtcnyNb8ata7N4g'
         },
         url: `https://io.adafruit.com/api/v2/baonguyenkhac/feeds/${e}`
     }).then(data => {
@@ -37,7 +37,7 @@ ledArr.forEach(element => {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'X-AIO-Key': 'aio_XnKw72j0M8u6Ae5DDvC2RyQ4wStD'
+                'X-AIO-Key': 'aio_Hfnz79nRupK7iPtcnyNb8ata7N4g'
             },
             url: `https://io.adafruit.com/api/v2/baonguyenkhac/feeds/${element}/data`,
             data: JSON.stringify({ 'value': value })

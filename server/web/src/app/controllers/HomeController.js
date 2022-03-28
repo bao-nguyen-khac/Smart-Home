@@ -10,6 +10,11 @@ class HomeController {
             layout: 'home'
         })
     }
+    async doorManager(req, res, next) {
+        res.render('door-manager', {
+            layout: 'home'
+        })
+    }
 }
 
 module.exports = new HomeController();

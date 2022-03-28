@@ -9,9 +9,9 @@ from Adafruit_IO import MQTTClient
 from sympy import true
 
 # AIO_FEED_ID = ['smart-led-1', 'smart-led-2', 'smart-temp-1', 'smart-humi-1']
-AIO_FEED_ID = ['smart-led-1', 'smart-led-2', 'smart-temp-1']
+AIO_FEED_ID = ['smart-led-1', 'smart-led-2', 'smart-doorPrivate-1']
 AIO_USERNAME = "baonguyenkhac"
-AIO_KEY = "aio_PUsz82FC9Dqmk0zhO2OHAn1InlV9"
+AIO_KEY = "aio_Hfnz79nRupK7iPtcnyNb8ata7N4g"
 
 def connected ( client ) :
     print ("Ket noi thanh cong ...")
@@ -30,13 +30,13 @@ def message ( client , feed_id , payload ):
     # if feed[1] == 'led':
     #     name = 'LED'
     #     key = feed[2]
-    # if feed[1] == 'temp':
+    # if feed[1] == 'doorPrivate':
     #     name = 'TEMP'
     #     key = feed[2]
     # data = [key, name, payload]
     # sendDataToDB(data)
     print(" Nhan du lieu : " + payload )
-    ser.write((feed[2] + str(payload) + "#").encode())
+    ser.write((feed[1] + feed[2] + str(payload) + "#").encode())
 
 def getPort():
     ports = serial.tools.list_ports.comports()
@@ -71,7 +71,13 @@ def processData(data):
             name = "smart-humi-" + splitData[0]
             client.publish(name, splitData[2])
         if splitData[1] == "LIGHT":
-            name = "smart-light-sensor" + splitData[0]
+            name = "smart-light" + splitData[0]
+            client.publish(name, splitData[2])
+        if splitData[1] == "GAS":
+            name = "smart-gas" + splitData[0]
+            client.publish(name, splitData[2])
+        if splitData[1] == "DOOR":
+            name = "smart-door" + splitData[0]
             client.publish(name, splitData[2])
     except:
         pass
