@@ -22,10 +22,6 @@ class ConnectSingleton {
         return ConnectSingleton.instance
     }
 
-    sayHi() {
-        console.log('hi con cac')
-    }
-
     async connect() {
         try {
             await mongoose.connect(process.env.DB_CONNECT,{

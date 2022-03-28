@@ -1,17 +1,14 @@
 import datetime
-import random
 import sys
 import time
 
 import pymongo
 import serial.tools.list_ports
 from Adafruit_IO import MQTTClient
-from sympy import true
 
-# AIO_FEED_ID = ['smart-led-1', 'smart-led-2', 'smart-temp-1', 'smart-humi-1']
-AIO_FEED_ID = ['smart-led-1', 'smart-led-2', 'smart-doorPrivate-1']
+AIO_FEED_ID = ['smart-led-1', 'smart-led-2', 'smart-doorprivate-1']
 AIO_USERNAME = "baonguyenkhac"
-AIO_KEY = "aio_Hfnz79nRupK7iPtcnyNb8ata7N4g"
+AIO_KEY = "aio_iOTN44ofmVCHuxS7Mcln0B7rOyfA"
 
 def connected ( client ) :
     print ("Ket noi thanh cong ...")
@@ -19,10 +16,10 @@ def connected ( client ) :
         client.subscribe( each )
     
 def subscribe ( client , userdata , mid , granted_qos ) :
-    print(" Subcribe thanh cong ...")
+    print("Subcribe thanh cong ...")
 
 def disconnected ( client ) :
-    print(" Ngat ket noi ...")
+    print("Ngat ket noi ...")
     sys.exit(1)
 
 def message ( client , feed_id , payload ):
@@ -52,7 +49,7 @@ def getPort():
 
 print(getPort())
 ser = serial.Serial( port=getPort(), baudrate=115200)
-# ser = serial.Serial( port="COM5", baudrate=115200)  
+# ser = serial.Serial( port="COM5", baudrate=115200)
 
 mess = ""
 def processData(data):
@@ -71,13 +68,13 @@ def processData(data):
             name = "smart-humi-" + splitData[0]
             client.publish(name, splitData[2])
         if splitData[1] == "LIGHT":
-            name = "smart-light" + splitData[0]
+            name = "smart-light-" + splitData[0]
             client.publish(name, splitData[2])
         if splitData[1] == "GAS":
-            name = "smart-gas" + splitData[0]
+            name = "smart-gas-" + splitData[0]
             client.publish(name, splitData[2])
         if splitData[1] == "DOOR":
-            name = "smart-door" + splitData[0]
+            name = "smart-door-" + splitData[0]
             client.publish(name, splitData[2])
     except:
         pass

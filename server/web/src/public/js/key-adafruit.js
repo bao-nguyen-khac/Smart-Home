@@ -1,0 +1,1 @@
+const keyAdafruit = 'aio_iOTN44ofmVCHuxS7Mcln0B7rOyfA';
