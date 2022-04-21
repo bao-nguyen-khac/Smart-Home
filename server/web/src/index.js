@@ -1,7 +1,7 @@
 require('dotenv').config()
 const path = require('path');
 const express = require('express');
-const morgan = require('morgan');
+// const morgan = require('morgan');
 const app = express();
 const port = process.env.PORT || 3000;
 const route = require('./routes');
@@ -13,7 +13,7 @@ const io = new Server(server)
 var connectSingleton = require('./config/db/index');
 const SmartLed = require('./app/models/SmartLed');
 const Notify = require('./app/models/Notify');
-
+const cookieParse = require('cookie-parser');
 const hbs = handlebars.create({
     extname: '.hbs',
 });
@@ -28,10 +28,11 @@ app.use(
     }),
 ); // unicode
 app.use(express.json()); // axios, ajax
+app.use(cookieParse(process.env.COOKIE_SECRECT)); //cookie parser
 // Middleware custome
 
 // Set up
-app.use(morgan('combined'));
+// app.use(morgan('combined'));
 
 app.engine('hbs', hbs.engine);
 

@@ -74,11 +74,13 @@ body{
 }
 
 .col-9{
+    border-radius: 20px;
     background-color: rgb(210, 227, 222);
     margin-bottom: 10px;
     width: 60%;
 }
 .col-6{
+    border-radius: 28px;
     padding-top: 2%;
     background-color: #6bb5ff;
     margin-bottom: 10px;

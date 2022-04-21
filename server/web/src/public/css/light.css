@@ -1,10 +1,14 @@
 .col-6{
+    border-radius: 20px;
     padding: 1.5%;
     background-color: #6bb5ff;
     margin: 15px;
 }
 .icon-light {
     font-size: 60px;
+    border-radius: 50%;
+    padding: 10px 24px;
+    background-color: lightgray;
 }
 
 .light-on {
@@ -24,6 +28,7 @@
 }
 
 .switch {
+    margin-left: 70%;
     position: relative;
     display: inline-block;
     width: 60px;
