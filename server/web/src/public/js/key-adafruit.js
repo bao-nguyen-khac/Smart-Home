@@ -1,1 +1,10 @@
-const keyAdafruit = 'aio_iOTN44ofmVCHuxS7Mcln0B7rOyfA';
+var keyAdafruit = "";
+axios({
+    method: 'GET',
+    url: `/key-adafruit`
+})
+    .then(data => {
+        keyAdafruit = data.data
+    })
+
+const socket = io();

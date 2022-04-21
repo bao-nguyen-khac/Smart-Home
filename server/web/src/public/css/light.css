@@ -1,4 +1,8 @@
-
+.col-6{
+    padding: 1.5%;
+    background-color: #6bb5ff;
+    margin: 15px;
+}
 .icon-light {
     font-size: 60px;
 }
@@ -134,7 +138,9 @@ input:checked+.slider:before {
         -moz-transform: rotate(360deg);
     }
 }
-
+body{
+    background-color: LightGray;
+}
 .activate {
     margin-top: 5px;
     padding: 3px 5px;

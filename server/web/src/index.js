@@ -8,14 +8,17 @@ const route = require('./routes');
 const handlebars = require('express-handlebars');
 const http = require("http");
 const server = http.createServer(app);
-
+const { Server } = require('socket.io');
+const io = new Server(server)
 var connectSingleton = require('./config/db/index');
+const SmartLed = require('./app/models/SmartLed');
+const Notify = require('./app/models/Notify');
 
 const hbs = handlebars.create({
     extname: '.hbs',
 });
 
-var db = connectSingleton.getInstance().connect()
+connectSingleton.getInstance().connect()
 
 // Middlleware built-in
 app.use(express.static(path.join(__dirname, 'public')));
@@ -36,6 +39,15 @@ app.set('view engine', 'hbs');
 
 app.set('views', path.join(__dirname, 'resources', 'views'));
 
+io.on("connection", () => {
+    console.log('User connected');
+    SmartLed.watch().on('change', data => {
+        io.emit("lightChange", data.fullDocument);
+    })
+    Notify.watch().on('change', data => {
+        io.emit("notifyChange", data.fullDocument);
+    })
+});
 
 // Routes init
 route(app);

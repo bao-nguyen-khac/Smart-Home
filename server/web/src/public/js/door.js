@@ -41,24 +41,27 @@ const getAPISmartDoorPrivate = (e) => {
         }
     })
 }
-doorArr.forEach(element => {
-    getAPISmartDoor(element.name)
-    getAPISmartDoorPrivate(element.private)
-    document.querySelector(`#${element.private}`).addEventListener('change', (e) => {
-        const value = e.target.checked ? 1 : 0;
-        axios({
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-AIO-Key': `${keyAdafruit}`
-            },
-            url: `https://io.adafruit.com/api/v2/baonguyenkhac/feeds/${element.private}/data`,
-            data: JSON.stringify({ 'value': value })
+setTimeout(() => {
+    doorArr.forEach(element => {
+        getAPISmartDoor(element.name)
+        getAPISmartDoorPrivate(element.private)
+        document.querySelector(`#${element.private}`).addEventListener('change', (e) => {
+            const value = e.target.checked ? 1 : 0;
+            axios({
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-AIO-Key': `${keyAdafruit}`
+                },
+                url: `https://io.adafruit.com/api/v2/baonguyenkhac/feeds/${element.private}/data`,
+                data: JSON.stringify({ 'value': value })
+            })
         })
     })
-})
+}, 1000);
+
 document.querySelector('.box-icon-reload').addEventListener('click', () => {
-    for(var element of doorArr) {
+    for (var element of doorArr) {
         getAPISmartDoor(element.name)
         getAPISmartDoorPrivate(element.private)
     }

@@ -1,15 +1,18 @@
-import datetime
+import os
 import sys
 import time
+from datetime import datetime, timedelta
 
 import pymongo
 import serial.tools.list_ports
 from Adafruit_IO import MQTTClient
+from dotenv import load_dotenv
 
+load_dotenv()
 AIO_FEED_ID = ['smart-led-1', 'smart-led-2', 'smart-doorprivate-1']
 AIO_USERNAME = "baonguyenkhac"
-AIO_KEY = "aio_iOTN44ofmVCHuxS7Mcln0B7rOyfA"
-
+AIO_KEY = os.getenv("AIO_KEY")
+DB = os.getenv("DB")
 def connected ( client ) :
     print ("Ket noi thanh cong ...")
     for each in AIO_FEED_ID:
@@ -24,15 +27,7 @@ def disconnected ( client ) :
 
 def message ( client , feed_id , payload ):
     feed = feed_id.split('-')
-    # if feed[1] == 'led':
-    #     name = 'LED'
-    #     key = feed[2]
-    # if feed[1] == 'doorPrivate':
-    #     name = 'TEMP'
-    #     key = feed[2]
-    # data = [key, name, payload]
-    # sendDataToDB(data)
-    print(" Nhan du lieu : " + payload )
+    print("Nhan du lieu : " + payload )
     ser.write((feed[1] + feed[2] + str(payload) + "#").encode())
 
 def getPort():
@@ -47,9 +42,9 @@ def getPort():
             commPort = (splitPort[0])
     return commPort
 
-print(getPort())
-ser = serial.Serial( port=getPort(), baudrate=115200)
-# ser = serial.Serial( port="COM5", baudrate=115200)
+# print(getPort())
+# ser = serial.Serial( port=getPort(), baudrate=115200)
+ser = serial.Serial( port="COM5", baudrate=115200)
 
 mess = ""
 def processData(data):
@@ -58,6 +53,7 @@ def processData(data):
     splitData = data.split(":")
     print(splitData)
     try:
+        sendDataToDB(splitData)
         if splitData[1] == "LED":
             name = "smart-led-" + splitData[0]
             client.publish(name, splitData[2])
@@ -95,23 +91,42 @@ def readSerial():
                 mess = mess[end+1:]
 
 # Connect Mongodb
-myclient = pymongo.MongoClient("mongodb://localhost:27017/")
+myclient = pymongo.MongoClient(DB)
 mydb = myclient["smart-home"]
 def sendDataToDB(data):
-    if data[1] == "LED":
-        mycol = mydb["smart-led"]
-        key = 'smart-led-' + data[0]
-    if data[1] == "TEMP":
-        mycol = mydb["smart-temp"]
-        key = 'smart-temp-' + data[0]
-    now = datetime.datetime.now()
-    output = {
-        "name": data[1],
-        "key": key,
-        "data": data[2],
-        "createAt": now
-    }
-    # mycol.insert_one(output)
+    if data[1] == "NOTIFY":
+        mycol = mydb["notifies"]
+        output = {
+            "key": 'smart-' + ('door-' if data[2] == '1' else 'gas-') + data[0],
+            "data": data[3],
+            "createdAt": datetime.now() - timedelta(hours = 7),
+        }
+    else:
+        if data[1] == "LED":
+            mycol = mydb["smartleds"]
+            key = 'smart-led-' + data[0]
+        if data[1] == "TEMP":
+            mycol = mydb["smarttemps"]
+            key = 'smart-temp-' + data[0]
+        if data[1] == "HUMI":
+            mycol = mydb["smarthumis"]
+            key = 'smart-humi-' + data[0]
+        if data[1] == "LIGHT":
+            mycol = mydb["smartlights"]
+            key = 'smart-light-' + data[0]
+        if data[1] == "GAS":
+            mycol = mydb["smartgass"]
+            key = 'smart-gas-' + data[0]
+        if data[1] == "DOOR":
+            mycol = mydb["smartdoors"]
+            key = 'smart-door-' + data[0]
+        output = {
+            "name": data[1],
+            "key": key,
+            "data": data[2],
+            "createdAt": datetime.now() - timedelta(hours = 7),
+        }
+    mycol.insert_one(output)
 
 client = MQTTClient ( AIO_USERNAME , AIO_KEY )
 client.on_connect = connected
