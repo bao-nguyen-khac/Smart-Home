@@ -42,9 +42,9 @@ def getPort():
             commPort = (splitPort[0])
     return commPort
 
-# print(getPort())
-# ser = serial.Serial( port=getPort(), baudrate=115200)
-ser = serial.Serial( port="COM5", baudrate=115200)
+print(getPort())
+ser = serial.Serial( port=getPort(), baudrate=115200)
+# ser = serial.Serial( port="COM5", baudrate=115200)
 
 mess = ""
 def processData(data):
@@ -97,8 +97,8 @@ def sendDataToDB(data):
     if data[1] == "NOTIFY":
         mycol = mydb["notifies"]
         output = {
-            "key": 'smart-' + ('door-' if data[2] == '1' else 'gas-') + data[0],
-            "data": data[3],
+            "key": 'smart-' + ('door-' if data[2][0] == '1' else 'gas-') + data[0],
+            "data": data[2][1],
             "createdAt": datetime.now() - timedelta(hours = 7),
         }
     else:

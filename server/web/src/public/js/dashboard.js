@@ -7,7 +7,7 @@ $(".box-icon-reload").click(function () {
 const tempArr = ['smart-temp-1']
 const humiArr = ['smart-humi-1']
 const lightArr = ['smart-light-sensor-1']
-const gasArr = ['smart-light-sensor-1']
+const gasArr = ['smart-gas-1']
 const getAPITemp = (e) => {
     axios({
         method: 'GET',
