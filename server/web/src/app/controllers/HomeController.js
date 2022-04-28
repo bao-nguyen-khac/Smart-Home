@@ -10,10 +10,10 @@ class HomeController {
         })
     }
     async index(req, res, next) {
-        if (req.query.room == 'livingroom') req.query.room = 'Phòng khách';
-        else if (req.query.room == 'kitchen') req.query.room = 'Phòng bếp';
-        else if (req.query.room == 'bedroom1') req.query.room = 'Phòng ngủ 1';
-        else if (req.query.room == 'bedroom2') req.query.room = 'Phòng ngủ 2';
+        if (req.query.room == 'livingroom') req.query.room = 'Living room';
+        else if (req.query.room == 'kitchen') req.query.room = 'Kitchen';
+        else if (req.query.room == 'bedroom1') req.query.room = 'Bedroom 1';
+        else if (req.query.room == 'bedroom2') req.query.room = 'Bedroom 2';
         res.render('dashboard', {
             layout: 'home',
             type: req.query.room
