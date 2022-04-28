@@ -13,6 +13,7 @@ const io = new Server(server)
 var connectSingleton = require('./config/db/index');
 const SmartLed = require('./app/models/SmartLed');
 const Notify = require('./app/models/Notify');
+const SmartDoor = require('./app/models/SmartDoor');
 const cookieParse = require('cookie-parser');
 const hbs = handlebars.create({
     extname: '.hbs',
@@ -47,6 +48,9 @@ io.on("connection", () => {
     })
     Notify.watch().on('change', data => {
         io.emit("notifyChange", data.fullDocument);
+    })
+    SmartDoor.watch().on('change', data => {
+        io.emit("doorChange", data.fullDocument);
     })
 });
 

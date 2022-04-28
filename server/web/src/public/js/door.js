@@ -1,9 +1,9 @@
-$(".box-icon-reload").click(function () {
-    $('.box-icon-reload').addClass('active');
-    $('.box-icon-reload').one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function () {
-        $(this).removeClass('active');
-    });
-});
+// $(".box-icon-reload").click(function () {
+//     $('.box-icon-reload').addClass('active');
+//     $('.box-icon-reload').one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function () {
+//         $(this).removeClass('active');
+//     });
+// });
 const doorArr = [{
     name: 'smart-door-1',
     private: 'smart-doorprivate-1'
@@ -64,5 +64,13 @@ document.querySelector('.box-icon-reload').addEventListener('click', () => {
     for (var element of doorArr) {
         getAPISmartDoor(element.name)
         getAPISmartDoorPrivate(element.private)
+    }
+})
+
+socket.on('doorChange', data => {
+    if (data.data == 1) {
+        document.querySelector('.icon-site').innerHTML = '<i class="fas fa-door-open"></i>'
+    } else {
+        document.querySelector('.icon-site').innerHTML = '<i class="fas fa-door-closed"></i>'
     }
 })

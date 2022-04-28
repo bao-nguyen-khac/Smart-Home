@@ -1,9 +1,9 @@
-$(".box-icon-reload").click(function () {
-    $('.box-icon-reload').addClass('active');
-    $('.box-icon-reload').one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function () {
-        $(this).removeClass('active');
-    });
-});
+// $(".box-icon-reload").click(function () {
+//     $('.box-icon-reload').addClass('active');
+//     $('.box-icon-reload').one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function () {
+//         $(this).removeClass('active');
+//     });
+// });
 
 const ledArr = ['smart-led-1', 'smart-led-2']
 const getAPISmartLed = (e) => {
@@ -15,14 +15,16 @@ const getAPISmartLed = (e) => {
         },
         url: `https://io.adafruit.com/api/v2/baonguyenkhac/feeds/${e}`
     }).then(data => {
-        const checkInputJQ = $(`#${e}`)
+        // const checkInputJQ = $(`#${e}`)
         const iconLight = document.getElementById(`${e}`).parentNode.parentNode.querySelector('.icon-light')
         if (data.data.last_value == 1) {
-            checkInputJQ.attr('checked', true)
+            // checkInputJQ.attr('checked', true)
+            document.getElementById(`${e}`).checked = true;
             iconLight.classList.remove("light-off")
             iconLight.classList.add("light-on")
         } else {
-            checkInputJQ.attr('checked', false)
+            // checkInputJQ.attr('checked', false)
+            document.getElementById(`${e}`).checked = false;
             iconLight.classList.remove("light-on")
             iconLight.classList.add("light-off")
         }
@@ -63,15 +65,15 @@ document.querySelector('.box-icon-reload').addEventListener('click', () => {
 })
 
 socket.on('lightChange', data => {
-    console.log(data)
-    const checkInputJQ = $(`#${data.key}`)
+    // console.log(data)
+    // const checkInputJQ = $(`#${data.key}`)
     const iconLight = document.getElementById(`${data.key}`).parentNode.parentNode.querySelector('.icon-light')
     if (data.data == 1) {
-        checkInputJQ.attr('checked', true)
+        document.getElementById(`${data.key}`).checked = true;
         iconLight.classList.remove("light-off")
         iconLight.classList.add("light-on")
     } else {
-        checkInputJQ.attr('checked', false)
+        document.getElementById(`${data.key}`).checked = false;
         iconLight.classList.remove("light-on")
         iconLight.classList.add("light-off")
     }
