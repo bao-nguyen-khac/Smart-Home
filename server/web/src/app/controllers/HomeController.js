@@ -4,9 +4,19 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const verifyToken = require('../../util/verifyToken');
 class HomeController {
-    async index(req, res, next) {
-        res.render('dashboard', {
+    async rooms(req, res, next) {
+        res.render('rooms', {
             layout: 'home'
+        })
+    }
+    async index(req, res, next) {
+        if (req.query.room == 'livingroom') req.query.room = 'Phòng khách';
+        else if (req.query.room == 'kitchen') req.query.room = 'Phòng bếp';
+        else if (req.query.room == 'bedroom1') req.query.room = 'Phòng ngủ 1';
+        else if (req.query.room == 'bedroom2') req.query.room = 'Phòng ngủ 2';
+        res.render('dashboard', {
+            layout: 'home',
+            type: req.query.room
         })
     }
     async lightManager(req, res, next) {
@@ -22,9 +32,9 @@ class HomeController {
     getKeyAdafruit(req, res, next) {
         res.send(process.env.KEY_ADAFRUIT)
     }
-    async getTempLastHours(req, res, next){
+    async getTempLastHours(req, res, next) {
         try {
-            const dataTemp = await SmartTemp.find({}, {_id: 0, name: 0, key: 0})
+            const dataTemp = await SmartTemp.find({}, { _id: 0, name: 0, key: 0 })
             res.send(dataTemp)
         } catch (error) {
             res.send(error)

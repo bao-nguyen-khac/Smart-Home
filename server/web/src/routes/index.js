@@ -7,7 +7,8 @@ function route(app) {
     app.get('/door-manager', AuthenMiddleware, HomeController.doorManager);
     app.get('/key-adafruit', AuthenMiddleware, HomeController.getKeyAdafruit);
     app.get('/getTempLastHours', AuthenMiddleware, HomeController.getTempLastHours);
-    app.get('/', AuthenMiddleware, HomeController.index);
+    app.get('/dashboard', AuthenMiddleware, HomeController.index);
+    app.get('/', AuthenMiddleware, HomeController.rooms);
 }
 
 module.exports = route;
