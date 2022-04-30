@@ -127,6 +127,7 @@ axios({
     url: `/getTempLastHours`
 })
     .then(data => {
+        console.log(data)
         var result = data.data
         result.map(e => row(e))
         xScale

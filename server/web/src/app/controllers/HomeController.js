@@ -34,7 +34,9 @@ class HomeController {
     }
     async getTempLastHours(req, res, next) {
         try {
-            const dataTemp = await SmartTemp.find({}, { _id: 0, name: 0, key: 0 })
+            const dataTemp = await SmartTemp.find({
+                "createdAt": {$gt: new Date(Date.now() - 60*60*1000)}
+            }, { _id: 0, name: 0, key: 0 })
             res.send(dataTemp)
         } catch (error) {
             res.send(error)
